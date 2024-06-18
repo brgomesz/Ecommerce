@@ -1,30 +1,51 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div>
+    <Header :logo="logo_src" :alt="app_name" />
+    <div>
+      <router-view></router-view>
+    </div>
+    <div class="trava-footer">
+      <Footer />
+    </div>
+  </div>
 </template>
 
+<script>
+import Header from "./components/Header.vue";
+import Footer from "./components/Footer";
+export default {
+  data: function () {
+    return {
+      logo_src: "/img/logo.png",
+      app_name: "Make Your Burger",
+    };
+  },
+  components: {
+    Header,
+    Footer,
+  },
+};
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+* * {
+  font-family: Helvetica;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-nav {
-  padding: 30px;
+.container {
+  margin: 50px;
+  margin-bottom: 120px;
+
 }
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.trava-footer{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
 }
 
-nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>
