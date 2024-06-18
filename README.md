@@ -1,4 +1,4 @@
-# anajuceramica
+# Loja Virtual - anajuceramica
 
 ## Project setup
 ```
