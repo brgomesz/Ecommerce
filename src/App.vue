@@ -1,6 +1,7 @@
 <template>
   <div>
     <Header :logo="logo_src" :alt="app_name" />
+    <Navbar />
     <div>
       <router-view></router-view>
     </div>
@@ -13,6 +14,7 @@
 <script>
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer";
+import Navbar from "./components/Navbar.vue"
 export default {
   data: function () {
     return {
@@ -21,8 +23,9 @@ export default {
     };
   },
   components: {
-    Header,
+    //Header,
     Footer,
+    Navbar,
   },
 };
 </script>

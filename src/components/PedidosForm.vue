@@ -1,34 +1,35 @@
-<template >
-  <h1>Cadastro de clientes</h1>
-  <div >
+<template>
+  <h1>Registro de pedidos</h1>
+  <div>
     <div>
       <input v-model="nome" placeholder="Digite o nome do cliente" />
     </div>
 
     <div>
-      <input v-model="cidade" placeholder="Digite a cidade do cliente" />
+      <input v-model="item" placeholder="Digite o item da compra" />
     </div>
 
     <div>
-      <input v-model="telefone" placeholder="Digite o telefone do cliente" />
+      <input
+        type="number"
+        v-model="quantidade"
+        placeholder="Selecione a quantidade"
+      />
     </div>
 
-    <button class="botao-enviar" @click="addCliente">Cadastrar cliente</button>
+    <button class="botao-enviar" @click="addPedido">Cadastrar Pedido</button>
 
-    <div class="container-texto">
-      <p>O ultimo cliente adicionado foi: {{ nomeImpresso }}</p>
-    </div>
-
-    <div v-if="clientes.length > 0" class="container-texto" >
-      <p>Lista de clientes adicionados:</p>
+    <div v-if="pedidos.length > 0" class="container-texto">
+      <p>Lista de pedidos adicionados:</p>
       <ul style="padding-left: 0rem">
-        <li v-for="(cliente, indice) in clientes" :key="indice">
+        <li v-for="(pedido, indice) in pedidos" :key="indice">
           <div class="container-clientes">
-            <div>Nome: {{ cliente.nome }}</div>
-            <div>Cidade: {{ cliente.cidade }}</div>
-            <div>Telefone: {{ cliente.telefone }}</div>
+            <div>Nome: {{ pedido.nome }}</div>
+            <div>item: {{ pedido.item }}</div>
+            <div>Quantidade: {{ pedido.quantidade }}</div>
 
             <div class="botao-conteiner">
+              <!-- Arrumar a função para editaPedido -->
               <button class="botao-editar" @click="editaCliente(indice)">
                 Editar
               </button>
@@ -49,42 +50,39 @@ export default {
     return {
       nome: "",
       nomes: [],
-      cidade: "",
-      cidades: [],
-      telefone: "",
+      item: "",
       itens: [],
-      clientes: [],
+      quantidade: "",
+      quantidades: [],
+      pedidos: [],
     };
   },
   methods: {
-    addCliente() {
-      if (this.nome && this.cidade && this.telefone) {
-        const cliente = {
+    addPedido() {
+      if (this.nome && this.item && this.quantidade) {
+        const pedido = {
           nome: this.nome,
-          cidade: this.cidade,
-          telefone: this.telefone,
+          item: this.item,
+          quantidade: this.quantidade,
         };
-        this.clientes.push(cliente);
-
-        //passa a variável do nome para o 'nome impresso' para que seja impresso na string
-        this.nomeImpresso = this.nome;
+        this.pedidos.push(pedido);
 
         //limpa os campos
         this.nome = "";
-        this.cidade = "";
-        this.telefone = "";
+        this.item = "";
+        this.quantidade = "";
       }
     },
     editaCliente(indice) {
-      const cliente = this.clientes[indice];
-      this.nome = cliente.nome;
-      this.cidade = cliente.cidade;
-      this.telefone = cliente.telefone;
-      this.clientes.splice(indice, 1);
+      const pedido = this.pedidos[indice];
+      this.nome = pedido.nome;
+      this.item = pedido.item;
+      this.quantidade = pedido.quantidade;
+      this.pedidos.splice(indice, 1);
     },
 
     excluiCliente(indice) {
-      this.clientes.splice(indice, 1);
+      this.pedidos.splice(indice, 1);
     },
   },
 };
@@ -161,19 +159,3 @@ input {
   background-color: rgb(46, 182, 46);
 }
 </style>
-
-<!-- 
-colocar dentro de: METHODS
-
-async getCadastros() {
-       const req = await fetch("http://localhost:3000/cadastros");
-       const data = await req.json();
-
-       this.nome = data.nome;
-       this.cidade = data.cidade;
-       this.item = data.item;
-     },
-
-     mounted () {
-     this.getCadastros()
-   }, -->

@@ -1,0 +1,11 @@
+{
+  "clientes": {
+    "cliente": [
+      {
+        "nome": "Bruno",
+        "cidade": "Joinville",
+        "item": "Carro"
+      }
+    ]
+  }
+}

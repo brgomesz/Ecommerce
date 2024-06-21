@@ -2,22 +2,21 @@
   <div>
     <div>
       <div class="container">
-        <h1>Tela dos pedidos</h1>
         <!-- O formulário de pedidos precisa ser inserido em um botão. -->
-         <!-- A tela de pedidos precisa ser apenas uma planilha com os pedidos já feitos -->
-        <FormularioPedidos />
+        <!-- A tela de pedidos precisa ser apenas uma planilha com os pedidos já feitos -->
+        <PedidosForm />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import FormularioPedidos from "../components/FormularioPedidos.vue";
+import PedidosForm from "../components/PedidosForm.vue";
 
 export default {
   name: "Pedidos",
-  components:{
-    FormularioPedidos
-  }
+  components: {
+    PedidosForm,
+  },
 };
 </script>
