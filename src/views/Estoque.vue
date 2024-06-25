@@ -1,18 +1,17 @@
 <template>
   <div>
     <div class="container">
-      <FormularioTeste />
+      <h1>Tela do estoque</h1>
     </div>
   </div>
 </template>
 
 <script>
-import FormularioTeste from "../components/FormularioTeste.vue";
 
 export default {
   name: "Estoque",
   components: {
-    FormularioTeste,
+    //adicionar o formulário do estoque 
   },
 };
 </script>
