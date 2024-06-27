@@ -1,17 +1,18 @@
 <template>
   <div>
     <div class="container">
-      <h1>Tela do estoque</h1>
+      <TesteFirebase />
+      
     </div>
   </div>
 </template>
 
 <script>
-
+import TesteFirebase from "../components/TesteFirebase.vue";
 export default {
   name: "Estoque",
   components: {
-    //adicionar o formulário do estoque 
+    TesteFirebase,
   },
 };
 </script>

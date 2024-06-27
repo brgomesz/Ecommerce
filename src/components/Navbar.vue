@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg" style="background-color: #785616">
     <div class="container-fluid">
       <router-link class="nav-link text-white" to="/" style="font-size: 25px"
-        >Anaju Ceramicas</router-link
+        >Decora blues</router-link
       >
       <button
         class="navbar-toggler"
