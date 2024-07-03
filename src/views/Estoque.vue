@@ -1,18 +1,18 @@
 <template>
   <div>
     <div class="container">
-      <TesteFirebase />
-      
+      <h1>Cadastro do estoque </h1>
+      <EstoqueDB />
     </div>
   </div>
 </template>
 
 <script>
-import TesteFirebase from "../components/TesteFirebase.vue";
+import EstoqueDB from "../components/EstoqueDB.vue";
 export default {
   name: "Estoque",
   components: {
-    TesteFirebase,
+    EstoqueDB,
   },
 };
 </script>
