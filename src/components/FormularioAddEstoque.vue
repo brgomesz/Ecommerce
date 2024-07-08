@@ -1,7 +1,16 @@
-ima<script setup>
-import { defineComponent, ref, onMounted } from "vue";
-import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
+<script setup>
 import { db } from "../firebase.js";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  addDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { defineComponent, ref, onMounted } from "vue";
+import Style from "../components/Style.vue";
+
 const props = defineProps({
   data: Object,
   isNew: Boolean,
@@ -11,74 +20,169 @@ defineComponent({
   name: "FormularioAddEstoque",
 });
 
-const emits = defineEmits(["close"]);
-
 onMounted(() => {
   itemEstoque.value = { ...itemEstoque.value, ...props.data };
+});
+
+//EstoqueDB
+onMounted(async () => {
+  let itemEstoqueCollection = await getDocs(collection(db, "itemEstoque"));
+  itemEstoqueCollection.forEach((itemEstoque) => {
+    estoque.value.push({ ...itemEstoque.data(), id: itemEstoque.id });
+  });
 });
 
 const itemEstoque = ref({
   categoria: "",
   material: "",
   preço: "",
+  quantidade: "",
 });
 
-async function addEditar() {
-  if (props.isNew) {
+async function addElemento() {
+  if (isNew.value) {
     await addDoc(collection(db, "itemEstoque"), itemEstoque.value).then(
-      (res) => {
-        emits("close");
-        location.reload();
-      }
+      location.reload()
     );
   } else {
     await updateDoc(
-      doc(db, "itemEstoque", props.data.id),
+      doc(db, "itemEstoque", itemEstoque.value.id),
       itemEstoque.value
-    ).then((res) => {
-      emits("close");
-      location.reload();
-    });
+    );
+
+    location.reload();
   }
 }
+async function deletaCadastro(id) {
+  await deleteDoc(doc(db, "itemEstoque", id));
+  location.reload();
+}
+
+async function editarElemento(id) {
+  try {
+    // Encontre o item no array estoque com base no ID
+    const itemParaEditar = estoque.value.find((item) => item.id === id);
+    if (itemParaEditar) {
+      // Atualize os campos do itemEstoque com os dados do item encontrado
+      itemEstoque.value = { ...itemEstoque.value, ...itemParaEditar };
+    } else {
+      console.error("Item não encontrado para edição.");
+    }
+  } catch (error) {
+    console.error("Erro ao editar o elemento:", error);
+  }
+}
+
+//Funções do EstoqueDB abaixo:
+const estoque = ref([]);
+const show = ref(false);
+const data = ref({});
+const isNew = ref(true);
 </script>
 
 <template>
-  <h3>Formulário</h3>
   <div>
-    <div>
-      <input
-        v-model="itemEstoque.categoria"
-        placeholder="Digite a categoria do item"
-      />
+    <div class="coluna-input">
+      <div class="area-input">
+        <h5>Categoria:</h5>
+        <input
+          v-model="itemEstoque.categoria"
+          placeholder="Digite a categoria do item"
+        />
+      </div>
+
+      <div class="area-input">
+        <h5>Material:</h5>
+        <input
+          v-model="itemEstoque.material"
+          placeholder="Digite o material do item"
+        />
+      </div>
+
+      <div class="area-input">
+        <h5>Quantidade:</h5>
+        <input
+          v-model="itemEstoque.quantidade"
+          placeholder="Digite a quantidade adicionada"
+        />
+      </div>
+      <div class="area-input">
+        <h5>Preço:</h5>
+        <input
+          v-model="itemEstoque.preço"
+          placeholder="Digite o preço do item"
+        />
+      </div>
     </div>
 
     <div>
-      <input
-        v-model="itemEstoque.material"
-        placeholder="Digite o material do item"
-      />
+      <button class="botao-enviar" @click="addElemento(), (isNew = true)">
+        {{ isNew ? "Adicionar" : "Editar" }}
+      </button>
     </div>
 
-    <div>
-      <input v-model="itemEstoque.preço" placeholder="Digite o preço do item" />
+    <!-- Fazer uma logica: quando aperto editar> ifNew = false, esconde o botão de adicionar e mostra o de editar, if = true, inverte -->
+  </div>
+
+  <!-- Adição do EstoqueDB abaixo -->
+
+  <div class="list-group">
+    <div
+      class="list-group-item"
+      style="
+        border-radius: 10px 10px 0 0;
+        background-color: rgb(116, 135, 103);
+        color: white;
+        border: solid 0px;
+        font-weight: bold;
+      "
+    >
+      <div class="grid-container">
+        <div>Categoria</div>
+        <div>Material</div>
+        <div>Quantidade</div>
+        <div>Preço</div>
+      </div>
     </div>
-    <button class="botao-fechar-editar" @click="addEditar()">
-      {{ isNew ? "Adicionar" : "Editar" }}
-    </button>
-    <button class="botao-fechar-editar" @click="emits('close')">Fechar</button>
+  </div>
+
+  <div class="list-group">
+    <div v-for="itemEstoque in estoque" :key="itemEstoque.id">
+      <div class="list-group-item list-group-item-action">
+        <div class="grid-container">
+          <div class="item">{{ itemEstoque.categoria }}</div>
+          <div class="item">{{ itemEstoque.material }}</div>
+          <div class="item">{{ itemEstoque.quantidade }} un</div>
+          <div class="item">R$:{{ itemEstoque.preço }}</div>
+
+          <div class="botao-container">
+            <button
+              class="botao-editar"
+              @click="editarElemento(itemEstoque.id), (isNew = false)"
+            >
+              Editar
+            </button>
+
+            <button
+              class="botao-excluir"
+              @click.stop="deletaCadastro(itemEstoque.id)"
+            >
+              X
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<style>
-* {
-  list-style: none;
-}
+<script>
+export default {
+  name: "FormularioAddEstoque",
+};
+</script>
 
-#ul {
-  padding-left: 0rem;
-}
-
+<style scoped>
 .container-clientes {
   border: 2px solid #d89d2f;
   /*align-items: flex-start;*/
@@ -95,79 +199,29 @@ async function addEditar() {
   margin-top: 20px;
 }
 
-input {
-  padding: 5px 10px;
-  width: 300px;
-  margin-bottom: 10px;
+h3 {
+  color: gray;
+  font-size: 15px;
 }
 
-.botao-enviar {
-  background-color: #222;
-  color: #d89d2f;
-  font-weight: bold;
-  border: 2px solid #222;
-  padding: 7px;
-  font-size: 13px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: 0.5s;
-  align-items: center;
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
 
-.botao-enviar:hover {
-  background-color: transparent;
-  color: #222;
+.cabecalho-tabela {
+  background-color: rgb(116, 135, 103);
+  color: white;
 }
 
-.botao-fechar-editar {
-  background-color: #d89d2f;
-  color: #222;
-  font-weight: bold;
-  border: 2px solid #222;
-  padding: 5px;
-  font-size: 12px;
-  /* cima baixo direita esquerda */
-  margin:5px 10px 5px 0px;
-  cursor: pointer;
-  transition: 0.5s;
-  align-items: center;
+.area-input {
+margin:0 0 10px 0px;
 }
 
-.botao-fechar-editar:hover {
-  background-color: #222;
-  color: #d89d2f;
-}
-
-
-.botao-container {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.botao-excluir,
-.botao-editar {
-  cursor: pointer;
-  padding: 5px;
-  font-weight: bold;
-  font-size: 13px;
-  color: #fff;
-  border: 1px solid #222;
-}
-
-.botao-excluir {
-  background-color: rgb(238, 53, 53);
-}
-.botao-editar {
-  margin-right: 10px;
-  background-color: rgb(46, 182, 46);
-}
-
-h3{
-    color:gray;
-    font-size: 15px;
+h5{
+  font-size: 15px;
+  color: rgb(133, 131, 131);
+  margin-bottom: 0;
 }
 </style>

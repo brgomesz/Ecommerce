@@ -2,18 +2,18 @@
   <div>
     <div class="container">
       <h1>Cadastro de clientes</h1>
-      <ClientesDB />
+      <CadastroClientes />
     </div>
   </div>
 </template>
 
 <script>
-import ClientesDB from "../components/ClientesDB.vue";
+import CadastroClientes from "../components/CadastroClientes.vue";
 
 export default {
   name: "Clientes",
   components: {
-    ClientesDB,
+    CadastroClientes,
   },
 };
 </script>

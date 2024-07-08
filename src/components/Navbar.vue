@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg" style="background-color: #785616">
+  <nav class="navbar navbar-expand-lg" style="background-color: rgb(116, 135, 103)">
     <div class="container-fluid">
       <router-link class="nav-link text-white" to="/" style="font-size: 25px"
         >Decora blues</router-link

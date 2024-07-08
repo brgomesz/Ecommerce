@@ -10,29 +10,24 @@ import {
 } from "firebase/firestore";
 import { defineComponent, ref, onMounted, watchEffect } from "vue";
 import Style from "../components/Style.vue";
-import FormularioAddCliente from "../components/FormularioAddCliente.vue";
-import FormularioAddEstoque from "../components/FormularioAddEstoque.vue";
 
-//essa função carrega os clientes do DB
-onMounted(async () => {
-  let clienteCollection = await getDocs(collection(db, "cliente"));
-  clienteCollection.forEach((cliente) => {
-    clientes.value.push({ ...cliente.data(), id: cliente.id });
-  });
-
-  //carrega o estoque do DB
-  let itemEstoqueCollection = await getDocs(collection(db, "itemEstoque"));
-  itemEstoqueCollection.forEach((itemEstoque) => {
-    estoque.value.push({ ...itemEstoque.data(), id: itemEstoque.id });
-  });
+const props = defineProps({
+  data: Object,
+  isNew: Boolean,
 });
 
-//carrega as vendas
+defineComponent({
+  name: "Vendas",
+});
+
+onMounted(() => {
+  venda.value = { ...venda.value, ...props.data };
+});
 
 onMounted(async () => {
   let vendaCollection = await getDocs(collection(db, "venda"));
   vendaCollection.forEach((venda) => {
-    vendas.value.push({ ...venda.data(), id: venda.id });
+    venda.value.push({ ...venda.data(), id: venda.id });
   });
 });
 
@@ -79,7 +74,6 @@ function atualizarItemExibido() {
 
 //seção do registro da venda
 //obs: adicionar outros dados da venda, data, quantidade...)
-
 
 async function addElemento() {
   if (isNew.value) {
@@ -185,7 +179,7 @@ function getItem(itemId) {
 
 <script>
 export default {
-  name: "FormularioPedidos",
+  name: "Vendas",
   components: {
     FormularioAddCliente,
     FormularioAddEstoque,

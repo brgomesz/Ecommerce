@@ -2,17 +2,17 @@
   <div>
     <div class="container">
       <h1>Cadastro do estoque </h1>
-      <EstoqueDB />
+      <FormularioAddEstoque />
     </div>
   </div>
 </template>
 
 <script>
-import EstoqueDB from "../components/EstoqueDB.vue";
+import FormularioAddEstoque from "../components/FormularioAddEstoque.vue";
 export default {
   name: "Estoque",
   components: {
-    EstoqueDB,
+    FormularioAddEstoque,
   },
 };
 </script>

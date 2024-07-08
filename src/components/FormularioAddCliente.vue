@@ -144,24 +144,6 @@ input {
   justify-content: flex-end;
 }
 
-.botao-excluir,
-.botao-editar {
-  cursor: pointer;
-  padding: 5px;
-  font-weight: bold;
-  font-size: 13px;
-  color: #fff;
-  border: 1px solid #222;
-}
-
-.botao-excluir {
-  background-color: rgb(238, 53, 53);
-}
-.botao-editar {
-  margin-right: 10px;
-  background-color: rgb(46, 182, 46);
-}
-
 h3{
     color:gray;
     font-size: 15px;
