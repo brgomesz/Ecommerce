@@ -7,10 +7,11 @@ import {
   addDoc,
   doc,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import { defineComponent, ref, onMounted, watchEffect } from "vue";
 import Style from "../components/Style.vue";
-import FormularioAddCliente from "../components/FormularioAddCliente.vue";
+import CadastroClientes from "../components/CadastroClientes.vue";
 import FormularioAddEstoque from "../components/FormularioAddEstoque.vue";
 
 //essa função carrega os clientes do DB
@@ -63,6 +64,8 @@ const itemSelecionado = ref(null);
 const categoria = ref("");
 const material = ref("");
 const preço = ref("");
+const quantidade = ref("");
+const itemEstoque = ref("");
 
 function atualizarItemExibido() {
   const itemEstoque = estoque.value.find((i) => i.id === itemSelecionado.value);
@@ -70,26 +73,19 @@ function atualizarItemExibido() {
     categoria.value = itemEstoque.categoria;
     material.value = itemEstoque.material;
     preço.value = itemEstoque.preço;
+    quantidade.value = itemEstoque.quantidade;
   } else {
     categoria.value = "";
     material.value = "";
     preço.value = "";
+    quantidade.value = "";
   }
 }
 
+//
 //seção do registro da venda
 //obs: adicionar outros dados da venda, data, quantidade...)
-
-
-async function addElemento() {
-  if (isNew.value) {
-    await addDoc(collection(db, "venda"), venda.value).then(location.reload());
-  } else {
-    await updateDoc(doc(db, "venda", venda.value.id), venda.value);
-
-    location.reload();
-  }
-}
+const quantidadeSelecionada = ref(null);
 
 async function deletaCadastro(id) {
   await deleteDoc(doc(db, "venda", id));
@@ -117,20 +113,32 @@ const venda = ref({
   cidade: "",
   cliente: "",
   itemEstoque: "",
+  quantidade: "",
 });
 const isNew = ref(true);
 
 async function registrarVenda() {
-  if (clienteSelecionado.value && itemSelecionado.value) {
+  if (
+    clienteSelecionado.value &&
+    itemSelecionado.value &&
+    quantidadeSelecionada.value
+  ) {
     const venda = {
       cliente: clienteSelecionado.value,
       itemEstoque: itemSelecionado.value,
+      quantidade: quantidadeSelecionada.value,
     };
 
-    await addDoc(collection(db, "venda"), venda).then((res) => {
+    const estoqueAtualizado = quantidade.value - quantidadeSelecionada.value;
+    if (estoqueAtualizado >= 0) {
+      await addDoc(collection(db, "venda"), venda);
+      await updateDoc(doc(db, "itemEstoque", itemSelecionado.value), {
+        quantidade: estoqueAtualizado,
+      });
       location.reload();
-    });
-    //addDoc(collection(db, "vendas"), venda)
+    } else {
+      alert("Estoque insuficiente! A venda não foi registrada.");
+    }
   }
 }
 
@@ -144,11 +152,28 @@ function getItem(itemId) {
   const itemEstoque = estoque.value.find((c) => c.id === itemId);
   return itemEstoque ? itemEstoque.categoria : "Algo deu errado";
 }
+
+//função para arrumar a coluna por ordem alfabética
+function sortOptionsByProperty(property)  {
+	vendas.value.sort((optionA, optionB) => {
+		optionA = optionA[property].toString().toLowerCase();
+		optionB = optionB[property].toString().toLowerCase();
+
+		if (optionA < optionB) {
+			return -1;
+		}
+		if (optionA > optionB) {
+			return 1;
+		}
+		return 0;
+	});
+}
 </script>
 
 <template>
-  <div>
-    <div class="container-clientes">
+  <div class="coluna-select-3">
+    <div>
+      <h5>Selecione o cliente</h5>
       <select v-model="clienteSelecionado" @change="atualizarClienteExibido">
         <option
           v-for="cliente in clientes"
@@ -161,7 +186,9 @@ function getItem(itemId) {
       <div>Cliente: {{ nome }}</div>
       <div>Cidade: {{ cidade }}</div>
       <div>Telefone: {{ telefone }}</div>
-
+    </div>
+    <div>
+      <h5>Selecione o item da venda</h5>
       <select v-model="itemSelecionado" @change="atualizarItemExibido">
         <option
           v-for="itemEstoque in estoque"
@@ -174,11 +201,63 @@ function getItem(itemId) {
       <div>Categoria: {{ categoria }}</div>
       <div>Material: {{ material }}</div>
       <div>Preço: {{ preço }}</div>
-      <button @click="registrarVenda">Registrar Venda</button>
     </div>
-    <div class="container-clientes" v-for="venda in vendas" :key="venda.id">
-      <div>Cliente:{{ getClienteName(venda.cliente) }}</div>
-      <div>Item:{{ getItem(venda.itemEstoque) }}</div>
+    <div>
+      <h5>Selecione a quantidade vendida:</h5>
+      <input
+        v-model="quantidadeSelecionada"
+        placeholder="Digite a quantidade"
+      />
+      <h5>Quantidade disponível: {{ quantidade}}</h5>
+    </div>
+  </div>
+  <button class="botao-enviar" @click="registrarVenda()">
+    Registrar Venda
+  </button>
+
+  <div class="list-group">
+    <div
+      class="list-group-item"
+      style="
+        border-radius: 10px 10px 0 0;
+        background-color: rgb(116, 135, 103);
+        color: white;
+        border: solid 0px;
+        font-weight: bold;
+      "
+    >
+      <div class="grid-container">
+        <a @click="sortOptionsByProperty('cliente')">Nome</a>
+        <a @click="sortOptionsByProperty('item')"> Item</a>
+        <div>Quantidade</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="list-group">
+    <div v-for="venda in vendas" :key="venda.id">
+      <div class="list-group-item list-group-item-action">
+        <div class="grid-container">
+          <div>{{ getClienteName(venda.cliente) }}</div>
+          <div>{{ getItem(venda.itemEstoque) }}</div>
+          <div>{{ venda.quantidade }} un</div>
+          <div class="botao-container">
+            <!-- <button
+              class="botao-editar"
+              @click="editarElemento(venda.id), (isNew = false)"
+            >
+              Editar
+            </button> -->
+
+            <button
+              class="botao-excluir"
+              @click.stop="deletaCadastro(venda.id)"
+            >
+              X
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -187,8 +266,32 @@ function getItem(itemId) {
 export default {
   name: "FormularioPedidos",
   components: {
-    FormularioAddCliente,
+    CadastroClientes,
     FormularioAddEstoque,
   },
 };
 </script>
+
+<style scoped>
+input {
+  padding: 5px 10px;
+  max-width: 180px;
+  margin-bottom: 10px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+select {
+  max-width: 180px;
+}
+h5 {
+  font-size: 15px;
+  color: rgb(133, 131, 131);
+  margin-bottom: 0;
+}
+
+
+</style>

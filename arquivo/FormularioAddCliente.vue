@@ -1,7 +1,7 @@
 ima<script setup>
 import { defineComponent, ref, onMounted } from "vue";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase.js";
+import { db } from "../src/firebase.js";
 const props = defineProps({
   data: Object,
   isNew: Boolean,

@@ -7,8 +7,11 @@ import {
   addDoc,
   doc,
   updateDoc,
+  query,
+  orderBy,
+  limit,
 } from "firebase/firestore";
-import { defineComponent, ref, onMounted,} from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import Style from "../components/Style.vue";
 
 const props = defineProps({
@@ -30,6 +33,7 @@ onMounted(async () => {
     clientes.value.push({ ...cliente.data(), id: cliente.id });
   });
 });
+
 
 const cliente = ref({
   nome: "",
@@ -73,26 +77,48 @@ const clientes = ref([]);
 const data = ref({});
 const isNew = ref(true);
 
+
+function sortOptionsByProperty(property)  {
+	clientes.value.sort((optionA, optionB) => {
+		optionA = optionA[property].toString().toLowerCase();
+		optionB = optionB[property].toString().toLowerCase();
+
+		if (optionA < optionB) {
+			return -1;
+		}
+		if (optionA > optionB) {
+			return 1;
+		}
+		return 0;
+	});
+}
 </script>
 
 <template>
   <div>
-    <div>
-      <input v-model="cliente.nome" placeholder="Digite o nome do cliente" />
-    </div>
+    <div class="coluna-select-3">
+      <div class="area-input">
+        <h5>Nome:</h5>
 
-    <div>
-      <input
-        v-model="cliente.cidade"
-        placeholder="Digite a cidade do cliente"
-      />
-    </div>
+        <input v-model="cliente.nome" placeholder="Digite o nome do cliente" />
+      </div>
+      <div class="area-input">
+        <h5>Cidade:</h5>
 
-    <div>
-      <input
-        v-model="cliente.telefone"
-        placeholder="Digite o telefone do cliente"
-      />
+        <input
+          v-model="cliente.cidade"
+          placeholder="Digite a cidade do cliente"
+        />
+      </div>
+
+      <div class="area-input">
+        <h5>Telefone:</h5>
+
+        <input
+          v-model="cliente.telefone"
+          placeholder="Digite o telefone do cliente"
+        />
+      </div>
     </div>
 
     <div>
@@ -101,8 +127,6 @@ const isNew = ref(true);
       </button>
     </div>
   </div>
-
- 
 
   <div class="list-group">
     <div
@@ -116,8 +140,8 @@ const isNew = ref(true);
       "
     >
       <div class="grid-container">
-        <div>Nome</div>
-        <div>Cidade</div>
+        <a @click="sortOptionsByProperty('nome')">Nome</a>
+        <a @click="sortOptionsByProperty('cidade')">Cidade</a>
         <div>Telefone</div>
       </div>
     </div>
@@ -130,8 +154,11 @@ const isNew = ref(true);
           <div aria-disabled="true" class="disabled">
             {{ cliente.nome }}
           </div>
+
           <div class="item">{{ cliente.cidade }}</div>
+
           <div class="item">{{ cliente.telefone }}</div>
+
           <div class="botao-container">
             <button
               class="botao-editar"
@@ -159,10 +186,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .container-texto {
   margin-top: 20px;
   margin-top: 20px;
+}
+h5 {
+  font-size: 15px;
+  color: rgb(133, 131, 131);
+  margin-bottom: 0;
 }
 
 .grid-container {
@@ -175,5 +207,11 @@ export default {
   display: flex;
   justify-content: end;
   padding-bottom: 10px;
+}
+
+h5 {
+  font-size: 15px;
+  color: rgb(133, 131, 131);
+  margin-bottom: 0;
 }
 </style>

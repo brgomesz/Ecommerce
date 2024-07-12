@@ -78,11 +78,27 @@ const estoque = ref([]);
 const show = ref(false);
 const data = ref({});
 const isNew = ref(true);
+
+//função para arrumar a coluna por ordem alfabética
+function sortOptionsByProperty(property)  {
+	estoque.value.sort((optionA, optionB) => {
+		optionA = optionA[property].toString().toLowerCase();
+		optionB = optionB[property].toString().toLowerCase();
+
+		if (optionA < optionB) {
+			return -1;
+		}
+		if (optionA > optionB) {
+			return 1;
+		}
+		return 0;
+	});
+}
 </script>
 
 <template>
   <div>
-    <div class="coluna-input">
+    <div class="coluna-input coluna-select-2">
       <div class="area-input">
         <h5>Categoria:</h5>
         <input
@@ -102,6 +118,7 @@ const isNew = ref(true);
       <div class="area-input">
         <h5>Quantidade:</h5>
         <input
+          type="number"
           v-model="itemEstoque.quantidade"
           placeholder="Digite a quantidade adicionada"
         />
@@ -138,17 +155,20 @@ const isNew = ref(true);
       "
     >
       <div class="grid-container">
-        <div>Categoria</div>
-        <div>Material</div>
-        <div>Quantidade</div>
-        <div>Preço</div>
+        <a @click="sortOptionsByProperty('categoria')">Categoria</a>
+        <a @click="sortOptionsByProperty('material')">Material</a>
+        <a @click="sortOptionsByProperty('quantidade')">Quantidade</a>
+        <a @click="sortOptionsByProperty('preço')">Preço</a>
       </div>
     </div>
   </div>
 
   <div class="list-group">
     <div v-for="itemEstoque in estoque" :key="itemEstoque.id">
-      <div class="list-group-item list-group-item-action">
+      <div
+        class="list-group-item list-group-item-action"
+        :class="{ 'estoque-zero': itemEstoque.quantidade === 0 }"
+      >
         <div class="grid-container">
           <div class="item">{{ itemEstoque.categoria }}</div>
           <div class="item">{{ itemEstoque.material }}</div>
@@ -183,6 +203,13 @@ export default {
 </script>
 
 <style scoped>
+.estoque-zero {
+  background-color: rgba(255, 0, 0, 0.452);
+}
+.estoque-zero:hover {
+  background-color: rgba(255, 0, 0, 0.712);
+}
+
 .container-clientes {
   border: 2px solid #d89d2f;
   /*align-items: flex-start;*/
@@ -215,11 +242,11 @@ h3 {
   color: white;
 }
 
-.area-input {
-margin:0 0 10px 0px;
+.linhas-estoque.zero {
+  color: red;
 }
 
-h5{
+h5 {
   font-size: 15px;
   color: rgb(133, 131, 131);
   margin-bottom: 0;
