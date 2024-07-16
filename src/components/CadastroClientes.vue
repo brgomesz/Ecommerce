@@ -34,7 +34,6 @@ onMounted(async () => {
   });
 });
 
-
 const cliente = ref({
   nome: "",
   cidade: "",
@@ -43,19 +42,18 @@ const cliente = ref({
 
 async function addElemento() {
   if (isNew.value) {
-    await addDoc(collection(db, "cliente"), cliente.value).then(
-      location.reload()
-    );
+    await addDoc(collection(db, "cliente"), cliente.value);
+    showLoading();
   } else {
     await updateDoc(doc(db, "cliente", cliente.value.id), cliente.value);
 
-    location.reload();
+    showLoading();
   }
 }
 
 async function deletaCadastro(id) {
   await deleteDoc(doc(db, "cliente", id));
-  location.reload();
+  showLoading();
 }
 
 async function editarElemento(id) {
@@ -74,28 +72,47 @@ async function editarElemento(id) {
 }
 
 const clientes = ref([]);
-const data = ref({});
+const show = ref(false);
 const isNew = ref(true);
 
+function sortOptionsByProperty(property) {
+  clientes.value.sort((optionA, optionB) => {
+    optionA = optionA[property].toString().toLowerCase();
+    optionB = optionB[property].toString().toLowerCase();
 
-function sortOptionsByProperty(property)  {
-	clientes.value.sort((optionA, optionB) => {
-		optionA = optionA[property].toString().toLowerCase();
-		optionB = optionB[property].toString().toLowerCase();
-
-		if (optionA < optionB) {
-			return -1;
-		}
-		if (optionA > optionB) {
-			return 1;
-		}
-		return 0;
-	});
+    if (optionA < optionB) {
+      return -1;
+    }
+    if (optionA > optionB) {
+      return 1;
+    }
+    return 0;
+  });
 }
+//loading por 1 seg e atualiza a página
+const isLoading = ref(false);
+function showLoading() {
+  isLoading.value = true;
+  setTimeout(() => {
+    location.reload();
+  }, 1000);
+}
+
 </script>
 
 <template>
-  <div>
+    <div class="" :class="{ honeycomb: isLoading === true }">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  
+  <div v-if="show">
+  <h2 class="titulo-cabeçalho">Cadastro de clientes</h2>
     <div class="coluna-select-3">
       <div class="area-input">
         <h5>Nome:</h5>
@@ -121,14 +138,25 @@ function sortOptionsByProperty(property)  {
       </div>
     </div>
 
+    
+
     <div>
       <button class="botao-enviar" @click="addElemento(), (isNew = true)">
-        {{ isNew ? "Adicionar" : "Editar" }}
+        {{ isNew ? "Cadastrar" : "Editar" }}
+      </button>
+      <button
+        class="botao-excluir"
+        @click="show = false"
+        style="margin-left: 10px"
+      >
+        Fechar
       </button>
     </div>
   </div>
+  <button v-if="!show" @click="show = true" class="botao-enviar">Novo cadastro</button>
 
   <div class="list-group">
+    <div class="honeycomb"></div>
     <div
       class="list-group-item"
       style="
@@ -162,7 +190,7 @@ function sortOptionsByProperty(property)  {
           <div class="botao-container">
             <button
               class="botao-editar"
-              @click="editarElemento(cliente.id), (isNew = false)"
+              @click="editarElemento(cliente.id), (isNew = false, show=true)"
             >
               Editar
             </button>

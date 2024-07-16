@@ -39,18 +39,25 @@ const itemEstoque = ref({
   quantidade: "",
 });
 
+//loading por 1 seg e atualiza a página
+const isLoading = ref(false);
+function showLoading() {
+  isLoading.value = true;
+  setTimeout(() => {
+    location.reload();
+  }, 1000);
+}
+
 async function addElemento() {
   if (isNew.value) {
-    await addDoc(collection(db, "itemEstoque"), itemEstoque.value).then(
-      location.reload()
-    );
+    await addDoc(collection(db, "itemEstoque"), itemEstoque.value);
+    showLoading();
   } else {
     await updateDoc(
       doc(db, "itemEstoque", itemEstoque.value.id),
       itemEstoque.value
     );
-
-    location.reload();
+    showLoading();
   }
 }
 async function deletaCadastro(id) {
@@ -79,67 +86,83 @@ const show = ref(false);
 const data = ref({});
 const isNew = ref(true);
 
-//função para arrumar a coluna por ordem alfabética
-function sortOptionsByProperty(property)  {
-	estoque.value.sort((optionA, optionB) => {
-		optionA = optionA[property].toString().toLowerCase();
-		optionB = optionB[property].toString().toLowerCase();
+//função para alternar a exibição do formulário
+console.log("Variavel", show);
 
-		if (optionA < optionB) {
-			return -1;
-		}
-		if (optionA > optionB) {
-			return 1;
-		}
-		return 0;
-	});
+//função para arrumar a coluna por ordem alfabética
+function sortOptionsByProperty(property) {
+  estoque.value.sort((optionA, optionB) => {
+    optionA = optionA[property].toString().toLowerCase();
+    optionB = optionB[property].toString().toLowerCase();
+
+    if (optionA < optionB) {
+      return -1;
+    }
+    if (optionA > optionB) {
+      return 1;
+    }
+    return 0;
+  });
 }
 </script>
 
 <template>
-  <div>
-    <div class="coluna-input coluna-select-2">
-      <div class="area-input">
-        <h5>Categoria:</h5>
-        <input
-          v-model="itemEstoque.categoria"
-          placeholder="Digite a categoria do item"
-        />
-      </div>
-
-      <div class="area-input">
-        <h5>Material:</h5>
-        <input
-          v-model="itemEstoque.material"
-          placeholder="Digite o material do item"
-        />
-      </div>
-
-      <div class="area-input">
-        <h5>Quantidade:</h5>
-        <input
-          type="number"
-          v-model="itemEstoque.quantidade"
-          placeholder="Digite a quantidade adicionada"
-        />
-      </div>
-      <div class="area-input">
-        <h5>Preço:</h5>
-        <input
-          v-model="itemEstoque.preço"
-          placeholder="Digite o preço do item"
-        />
-      </div>
-    </div>
-
-    <div>
-      <button class="botao-enviar" @click="addElemento(), (isNew = true)">
-        {{ isNew ? "Adicionar" : "Editar" }}
-      </button>
-    </div>
-
-    <!-- Fazer uma logica: quando aperto editar> ifNew = false, esconde o botão de adicionar e mostra o de editar, if = true, inverte -->
+  <div class="" :class="{ honeycomb: isLoading === true }">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
   </div>
+  <div v-if="show">
+    <h2 class="titulo-cabeçalho">Cadastro do estoque</h2>
+    <div>
+      <div class="coluna-input coluna-select-2">
+        <div class="area-input">
+          <h5>Item:</h5>
+          <input
+            v-model="itemEstoque.categoria"
+            placeholder="Descrição do item"
+          />
+        </div>
+
+        <div class="area-input">
+          <h5>Categoria:</h5>
+          <input
+            v-model="itemEstoque.material"
+            placeholder="Categoria do item"
+          />
+        </div>
+
+        <div class="area-input">
+          <h5>Quantidade:</h5>
+          <input
+            type="number"
+            v-model="itemEstoque.quantidade"
+            placeholder="Quantidade adicionada"
+          />
+        </div>
+        <div class="area-input">
+          <h5>Preço:</h5>
+          <input v-model="itemEstoque.preço" placeholder="Preço unitário" />
+        </div>
+      </div>
+
+      <div class="honeycomb"></div>
+
+      <div>
+        <button class="botao-enviar" @click="addElemento(), (isNew = true)">
+          {{ isNew ? "Cadastrar" : "Editar" }}
+        </button>
+        <button class="botao-excluir" @click="show = false" style="margin-left:10px;">Fechar</button>
+      </div>
+    </div>
+    <!-- Fazer uma logica: quando aperto editar> ifNew = false, esconde o botão de adicionar e mostra o de editar, if = true, inverte -->
+    
+  </div>
+  <button v-if="!show" @click="show = true" class="botao-enviar">Novo cadastro</button>
 
   <!-- Adição do EstoqueDB abaixo -->
 
@@ -155,8 +178,8 @@ function sortOptionsByProperty(property)  {
       "
     >
       <div class="grid-container">
-        <a @click="sortOptionsByProperty('categoria')">Categoria</a>
-        <a @click="sortOptionsByProperty('material')">Material</a>
+        <a @click="sortOptionsByProperty('categoria')">Item</a>
+        <a @click="sortOptionsByProperty('material')">Categoria</a>
         <a @click="sortOptionsByProperty('quantidade')">Quantidade</a>
         <a @click="sortOptionsByProperty('preço')">Preço</a>
       </div>
@@ -178,7 +201,7 @@ function sortOptionsByProperty(property)  {
           <div class="botao-container">
             <button
               class="botao-editar"
-              @click="editarElemento(itemEstoque.id), (isNew = false)"
+              @click="editarElemento(itemEstoque.id), (isNew = false, show=true)"
             >
               Editar
             </button>

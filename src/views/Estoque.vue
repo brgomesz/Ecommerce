@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="container">
-      <h1>Cadastro do estoque </h1>
       <FormularioAddEstoque />
     </div>
   </div>
@@ -9,6 +8,7 @@
 
 <script>
 import FormularioAddEstoque from "../components/FormularioAddEstoque.vue";
+import Style from "../components/Style.vue";
 export default {
   name: "Estoque",
   components: {

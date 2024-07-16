@@ -65,6 +65,7 @@ const categoria = ref("");
 const material = ref("");
 const preço = ref("");
 const quantidade = ref("");
+const precoVenda = ref("");
 const itemEstoque = ref("");
 
 function atualizarItemExibido() {
@@ -81,17 +82,16 @@ function atualizarItemExibido() {
     quantidade.value = "";
   }
 }
-
 //
 //seção do registro da venda
-//obs: adicionar outros dados da venda, data, quantidade...)
-const quantidadeSelecionada = ref(null);
+const quantidadeSelecionada = ref("");
 
 async function deletaCadastro(id) {
   await deleteDoc(doc(db, "venda", id));
-  location.reload();
+  showLoading();
 }
 
+//função desativada
 async function editarElemento(id) {
   try {
     // Encontre o item no array estoque com base no ID
@@ -114,8 +114,11 @@ const venda = ref({
   cliente: "",
   itemEstoque: "",
   quantidade: "",
+  preço: "",
+  precoVenda: "",
 });
 const isNew = ref(true);
+const show = ref(false);
 
 async function registrarVenda() {
   if (
@@ -128,14 +131,18 @@ async function registrarVenda() {
       itemEstoque: itemSelecionado.value,
       quantidade: quantidadeSelecionada.value,
     };
+    const valorFinal = 0;
+
+    console.log("Valor Final:", valorFinal);
 
     const estoqueAtualizado = quantidade.value - quantidadeSelecionada.value;
+
     if (estoqueAtualizado >= 0) {
       await addDoc(collection(db, "venda"), venda);
       await updateDoc(doc(db, "itemEstoque", itemSelecionado.value), {
         quantidade: estoqueAtualizado,
       });
-      location.reload();
+      showLoading();
     } else {
       alert("Estoque insuficiente! A venda não foi registrada.");
     }
@@ -154,67 +161,99 @@ function getItem(itemId) {
 }
 
 //função para arrumar a coluna por ordem alfabética
-function sortOptionsByProperty(property)  {
-	vendas.value.sort((optionA, optionB) => {
-		optionA = optionA[property].toString().toLowerCase();
-		optionB = optionB[property].toString().toLowerCase();
+function sortOptionsByProperty(property) {
+  vendas.value.sort((optionA, optionB) => {
+    optionA = optionA[property].toString().toLowerCase();
+    optionB = optionB[property].toString().toLowerCase();
 
-		if (optionA < optionB) {
-			return -1;
-		}
-		if (optionA > optionB) {
-			return 1;
-		}
-		return 0;
-	});
+    if (optionA < optionB) {
+      return -1;
+    }
+    if (optionA > optionB) {
+      return 1;
+    }
+    return 0;
+  });
+}
+
+//loading por 1 seg e atualiza a página
+const isLoading = ref(false);
+function showLoading() {
+  isLoading.value = true;
+  setTimeout(() => {
+    location.reload();
+  }, 1000);
 }
 </script>
 
 <template>
-  <div class="coluna-select-3">
-    <div>
-      <h5>Selecione o cliente</h5>
-      <select v-model="clienteSelecionado" @change="atualizarClienteExibido">
-        <option
-          v-for="cliente in clientes"
-          :key="cliente.id"
-          :value="cliente.id"
-        >
-          {{ cliente.nome }}
-        </option>
-      </select>
-      <div>Cliente: {{ nome }}</div>
-      <div>Cidade: {{ cidade }}</div>
-      <div>Telefone: {{ telefone }}</div>
-    </div>
-    <div>
-      <h5>Selecione o item da venda</h5>
-      <select v-model="itemSelecionado" @change="atualizarItemExibido">
-        <option
-          v-for="itemEstoque in estoque"
-          :key="itemEstoque.id"
-          :value="itemEstoque.id"
-        >
-          {{ itemEstoque.categoria }}
-        </option>
-      </select>
-      <div>Categoria: {{ categoria }}</div>
-      <div>Material: {{ material }}</div>
-      <div>Preço: {{ preço }}</div>
-    </div>
-    <div>
-      <h5>Selecione a quantidade vendida:</h5>
-      <input
-        v-model="quantidadeSelecionada"
-        placeholder="Digite a quantidade"
-      />
-      <h5>Quantidade disponível: {{ quantidade}}</h5>
-    </div>
+  <div class="" :class="{ honeycomb: isLoading === true }">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
   </div>
-  <button class="botao-enviar" @click="registrarVenda()">
-    Registrar Venda
+  <div v-if="show">
+    <h2 class="titulo-cabeçalho">Registrar venda</h2>
+    <div class="coluna-select-3">
+      <div>
+        <h5>Selecione o cliente</h5>
+        <select v-model="clienteSelecionado" @change="atualizarClienteExibido">
+          <option
+            v-for="cliente in clientes"
+            :key="cliente.id"
+            :value="cliente.id"
+          >
+            {{ cliente.nome }}
+          </option>
+        </select>
+        <div>Cliente: {{ nome }}</div>
+        <div>Cidade: {{ cidade }}</div>
+        <div>Telefone: {{ telefone }}</div>
+      </div>
+      <div>
+        <h5>Selecione o item da venda</h5>
+        <select v-model="itemSelecionado" @change="atualizarItemExibido">
+          <option
+            v-for="itemEstoque in estoque"
+            :key="itemEstoque.id"
+            :value="itemEstoque.id"
+          >
+            {{ itemEstoque.categoria }}
+          </option>
+        </select>
+        <div>Categoria: {{ categoria }}</div>
+        <div>Material: {{ material }}</div>
+        <div>Preço: {{ preço }}</div>
+      </div>
+      <div>
+        <h5>Selecione a quantidade vendida:</h5>
+        <input
+          v-model="quantidadeSelecionada"
+          placeholder="Digite a quantidade"
+        />
+        <h5>Quantidade disponível: {{ quantidade }}</h5>
+        <!-- <h5>Subtotal da venda:{{ preço * quantidade}}</h5> -->
+      </div>
+    </div>
+    <button class="botao-enviar" @click="registrarVenda()">
+      Registrar Venda
+    </button>
+    <div class="honeycomb"></div>
+    <button
+      class="botao-excluir"
+      @click="show = false"
+      style="margin-left: 10px"
+    >
+      Fechar
+    </button>
+  </div>
+  <button v-if="!show" @click="show = true" class="botao-enviar">
+    Nova venda
   </button>
-
   <div class="list-group">
     <div
       class="list-group-item"
@@ -241,6 +280,7 @@ function sortOptionsByProperty(property)  {
           <div>{{ getClienteName(venda.cliente) }}</div>
           <div>{{ getItem(venda.itemEstoque) }}</div>
           <div>{{ venda.quantidade }} un</div>
+          <!-- <div>R${{ venda.precoVenda }}</div> -->
           <div class="botao-container">
             <!-- <button
               class="botao-editar"
@@ -292,6 +332,4 @@ h5 {
   color: rgb(133, 131, 131);
   margin-bottom: 0;
 }
-
-
 </style>

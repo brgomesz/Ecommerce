@@ -27,9 +27,6 @@ h5 {
   margin-bottom: 0;
 }
 
-.coluna-input{
-  
-}
 
 
 .botao-excluir,
@@ -63,22 +60,26 @@ input {
 .botao-enviar {
   background-color: rgb(116, 135, 103);
   color: white;
-  font-weight: bold;
+  font-weight:bolder;
   border: 2px solid rgb(116, 135, 103);
   border-radius: 10px;
   padding: 7px;
-  font-size: 13px;
+  font-size: 14px;
   margin: 10px 0 10px 0px;
   cursor: pointer;
   transition: 0.5s;
   align-items: center;
 }
 
+
+.botao-flutuante{
+  padding:10px;
+  border-radius:10px;
+}
+
 .area-input {
   margin: 10px 0 0px 0px;
 }
-
-
 
 .botao-enviar:hover {
   background-color: transparent;
@@ -153,7 +154,7 @@ input {
   padding: 10px;
 }
 
-.coluna-select-2{
+.coluna-select-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   border: 2px solid rgb(116, 135, 103);
@@ -194,7 +195,140 @@ h3 {
   color: gray;
   font-size: 15px;
 }
-a{
-  cursor:pointer;
+a {
+  cursor: pointer;
+}
+.titulo-cabeçalho {
+  width: auto;
+  color: white;
+  background-color: rgb(116, 135, 103);
+  margin-bottom: -2px;
+  border-radius: 15px 15px 0 0;
+  padding: 5px 0px 5px 15px;
+}
+
+@-webkit-keyframes honeycomb {
+  0%,
+  20%,
+  80%,
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+
+  30%,
+  70% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes honeycomb {
+  0%,
+  20%,
+  80%,
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+
+  30%,
+  70% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+.honeycomb {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index:999;
+}
+
+.honeycomb div {
+  -webkit-animation: honeycomb 2.1s infinite backwards;
+  animation: honeycomb 2.1s infinite backwards;
+  background: #00000048;
+  height: 12px;
+  margin-top: 6px;
+  position: absolute;
+  width: 24px;
+}
+
+.honeycomb div:after,
+.honeycomb div:before {
+  content: "";
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.honeycomb div:after {
+  top: -6px;
+  border-bottom: 6px solid #00000048;
+}
+
+.honeycomb div:before {
+  bottom: -6px;
+  border-top: 6px solid #00000048;
+}
+
+.honeycomb div:nth-child(1) {
+  -webkit-animation-delay: 0s;
+  animation-delay: 0s;
+  left: -28px;
+  top: 0;
+}
+
+.honeycomb div:nth-child(2) {
+  -webkit-animation-delay: 0.1s;
+  animation-delay: 0.1s;
+  left: -14px;
+  top: 22px;
+}
+
+.honeycomb div:nth-child(3) {
+  -webkit-animation-delay: 0.2s;
+  animation-delay: 0.2s;
+  left: 14px;
+  top: 22px;
+}
+
+.honeycomb div:nth-child(4) {
+  -webkit-animation-delay: 0.3s;
+  animation-delay: 0.3s;
+  left: 28px;
+  top: 0;
+}
+
+.honeycomb div:nth-child(5) {
+  -webkit-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+  left: 14px;
+  top: -22px;
+}
+
+.honeycomb div:nth-child(6) {
+  -webkit-animation-delay: 0.5s;
+  animation-delay: 0.5s;
+  left: -14px;
+  top: -22px;
+}
+
+.honeycomb div:nth-child(7) {
+  -webkit-animation-delay: 0.6s;
+  animation-delay: 0.6s;
+  left: 0;
+  top: 0;
 }
 </style>
+
+
