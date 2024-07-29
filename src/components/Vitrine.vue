@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: "Produtos",
+  name: "Vitrine",
 };
 </script>
 

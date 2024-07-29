@@ -3,18 +3,19 @@
     <Banner />
   </div>
   <div>
-    <Produtos />
+    <Vitrine />
   </div>
   
 </template>
 
 <script>
 import Banner from "../components/Banner.vue";
-import Produtos from "../components/Produtos.vue";
+import Vitrine from "../components/Vitrine.vue";
+
 
 export default {
   name: "Vendas",
-  components: { Banner, Produtos },
+  components: { Banner, Vitrine },
 };
 </script>
 

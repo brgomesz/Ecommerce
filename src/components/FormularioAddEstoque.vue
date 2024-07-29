@@ -37,6 +37,7 @@ const itemEstoque = ref({
   material: "",
   preço: "",
   quantidade: "",
+  imagem: "",
 });
 
 //loading por 1 seg e atualiza a página
@@ -123,6 +124,8 @@ function sortOptionsByProperty(property) {
         <div class="area-input">
           <h5>Item:</h5>
           <input
+            type="text"
+            maxlength="25"
             v-model="itemEstoque.categoria"
             placeholder="Descrição do item"
           />
@@ -130,10 +133,16 @@ function sortOptionsByProperty(property) {
 
         <div class="area-input">
           <h5>Categoria:</h5>
-          <input
+
+          <select
+            class="area-input"
             v-model="itemEstoque.material"
             placeholder="Categoria do item"
-          />
+          >
+            <option value="Cozinha">Cozinha</option>
+            <option value="Acessórios">Acessórios</option>
+            <option value="Decoração">Decoração</option>
+          </select>
         </div>
 
         <div class="area-input">
@@ -148,6 +157,10 @@ function sortOptionsByProperty(property) {
           <h5>Preço:</h5>
           <input v-model="itemEstoque.preço" placeholder="Preço unitário" />
         </div>
+        <div class="area-input">
+          <h5>URL Imagem:</h5>
+          <input v-model="itemEstoque.imagem" placeholder="URL da imagem" />
+        </div>
       </div>
 
       <div class="honeycomb"></div>
@@ -156,13 +169,20 @@ function sortOptionsByProperty(property) {
         <button class="botao-enviar" @click="addElemento(), (isNew = true)">
           {{ isNew ? "Cadastrar" : "Editar" }}
         </button>
-        <button class="botao-excluir" @click="show = false" style="margin-left:10px;">Fechar</button>
+        <button
+          class="botao-excluir"
+          @click="show = false"
+          style="margin-left: 10px"
+        >
+          Fechar
+        </button>
       </div>
     </div>
     <!-- Fazer uma logica: quando aperto editar> ifNew = false, esconde o botão de adicionar e mostra o de editar, if = true, inverte -->
-    
   </div>
-  <button v-if="!show" @click="show = true" class="botao-enviar">Novo cadastro</button>
+  <button v-if="!show" @click="show = true" class="botao-enviar">
+    Novo cadastro
+  </button>
 
   <!-- Adição do EstoqueDB abaixo -->
 
@@ -201,7 +221,9 @@ function sortOptionsByProperty(property) {
           <div class="botao-container">
             <button
               class="botao-editar"
-              @click="editarElemento(itemEstoque.id), (isNew = false, show=true)"
+              @click="
+                editarElemento(itemEstoque.id), ((isNew = false), (show = true))
+              "
             >
               Editar
             </button>
