@@ -78,7 +78,9 @@ input {
 }
 
 .area-input {
-  margin: 10px 0 0px 0px;
+  padding: 5px 10px;
+  width: 300px;
+  margin-bottom: 10px;
 }
 
 .botao-enviar:hover {
@@ -329,6 +331,8 @@ a {
   left: 0;
   top: 0;
 }
+
+
 </style>
 
 

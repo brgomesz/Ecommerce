@@ -242,4 +242,15 @@ h5 {
   color: rgb(133, 131, 131);
   margin-bottom: 0;
 }
+
+
+@media screen and (max-width: 860px) {
+  .list-group-item {
+    padding-bottom: 40px;
+  }
+  .coluna-select-3 {
+    display: grid;
+    grid-template-columns:1fr;    
+  }
+}
 </style>

@@ -9,7 +9,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { defineComponent, ref, onMounted } from "vue";
-import Style from "../components/Style.vue";
+import Style from "./Style.vue";
 
 const props = defineProps({
   data: Object,
@@ -296,4 +296,15 @@ h5 {
   color: rgb(133, 131, 131);
   margin-bottom: 0;
 }
+
+@media screen and (max-width: 860px) {
+  .list-group-item {
+    padding-bottom: 40px;
+  }
+  .coluna-input {
+    display: grid;
+    grid-template-columns:1fr;    
+  }
+}
+
 </style>

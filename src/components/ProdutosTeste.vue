@@ -42,7 +42,6 @@ const itemEstoque = ref({
   quantidade: "",
   imagem: "",
 });
-
 const categoriaSelecionada = ref("");
 const estoqueFiltrado = ref([]);
 
@@ -63,18 +62,8 @@ const filtrarProdutos = () => {
 
 <template>
   <div class="container-produtos">
-    <div class="coluna barra-lateral">
-      <textarea
-        class="filtro-select"
-        placeholder="Pesquisa"
-        cols="15"
-        rows="1"
-      ></textarea>
-      <button>Pesquisar</button>
-      <div>
-
-        <div class="filtro-categorias">
-          <h5 for="categoria-select">Filtrar por categoria:</h5>
+    <div class="coluna conteudo-site">
+      <h5 for="categoria-select">Filtrar por categoria:</h5>
           <select
             id="categoria-select"
             v-model="categoriaSelecionada"
@@ -85,20 +74,6 @@ const filtrarProdutos = () => {
             <option value="Acessórios">Acessórios</option>
             <option value="Decoração">Decoração</option>
           </select>
-        </div>
-      </div>
-
-      <h5>Filtrar por preço</h5>
-      <select class="filtro-select">
-        <option value="opcao1">Até R$9,99</option>
-        <option value="opcao2">De R$10,00 até R$49,99</option>
-        <option value="opcao3">Acima de R$50,00</option>
-      </select>
-    </div>
-    <div class="coluna conteudo-site">
-      <H1>Categoria: (categoria escolhida aparece aqui)</H1>
-      <label class="categoria-select">Categoria:</label>
-
       <div>
         <div class="vitrine">
           <div v-for="itemEstoque in estoqueFiltrado" :key="itemEstoque.id">
@@ -148,7 +123,7 @@ export default {
 .conteudo-site {
   margin: 0px 0px 0 10px;
 }
-/* Mudar para produto img */
+
 .produto {
   width: 340px;
   height: 400px;
@@ -159,6 +134,11 @@ export default {
   display: flex;
   flex-direction: column;
 }
+@media screen and (max-width: 860px) {
+  .produto {
+    scale:0.89;
+  }
+}
 
 .imagem-produto {
   margin: 5px 5px 5px 5px;
@@ -166,6 +146,12 @@ export default {
   background-color: rgba(0, 0, 0, 0.048);
   transition: 0.5s;
   max-height: 290px;
+}
+
+@media screen and (max-width: 860px) {
+  .imagem-produto {
+    scale:0.9;
+  }
 }
 
 .imagem-produto:hover {
@@ -218,15 +204,6 @@ p {
   font-size: 20px;
   text-decoration: none;
   color: #000;
-}
-.container-produtos {
-  display: grid;
-  grid-template-columns: 15% 85%;
-}
-.barra-lateral {
-  height: 100%;
-  background-color: rgba(116, 135, 103, 0.13);
-  padding: 10px;
 }
 
 .categoria-select {

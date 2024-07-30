@@ -201,7 +201,11 @@ function showLoading() {
     <div class="coluna-select-3">
       <div>
         <h5>Selecione o cliente</h5>
-        <select v-model="clienteSelecionado" @change="atualizarClienteExibido">
+        <select
+          class="area-input"
+          v-model="clienteSelecionado"
+          @change="atualizarClienteExibido"
+        >
           <option
             v-for="cliente in clientes"
             :key="cliente.id"
@@ -210,13 +214,18 @@ function showLoading() {
             {{ cliente.nome }}
           </option>
         </select>
-        <div>Cliente: {{ nome }}</div>
-        <div>Cidade: {{ cidade }}</div>
-        <div>Telefone: {{ telefone }}</div>
+        <h5>Cliente: {{ nome }}</h5>
+        <h5>Cidade: {{ cidade }}</h5>
+        <h5>Telefone: {{ telefone }}</h5>
+      <p></p>
       </div>
       <div>
         <h5>Selecione o item da venda</h5>
-        <select v-model="itemSelecionado" @change="atualizarItemExibido">
+        <select
+          class="area-input"
+          v-model="itemSelecionado"
+          @change="atualizarItemExibido"
+        >
           <option
             v-for="itemEstoque in estoque"
             :key="itemEstoque.id"
@@ -225,13 +234,15 @@ function showLoading() {
             {{ itemEstoque.categoria }}
           </option>
         </select>
-        <div>Categoria: {{ categoria }}</div>
-        <div>Material: {{ material }}</div>
-        <div>Preço: {{ preço }}</div>
+        <h5>Categoria: {{ categoria }}</h5>
+        <h5>Material: {{ material }}</h5>
+        <h5>Preço: {{ preço }}</h5>
+        <p></p>
       </div>
       <div>
         <h5>Selecione a quantidade vendida:</h5>
         <input
+          class="area-input"
           v-model="quantidadeSelecionada"
           placeholder="Digite a quantidade"
         />
@@ -331,5 +342,12 @@ h5 {
   font-size: 15px;
   color: rgb(133, 131, 131);
   margin-bottom: 0;
+}
+
+@media screen and (max-width: 860px) {
+  .coluna-select-3 {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 }
 </style>
